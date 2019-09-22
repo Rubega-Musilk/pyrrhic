@@ -1,0 +1,12 @@
+@import "colors";
+@import "mixins";
+
+html {
+    background-color: #FFF;
+    color: $color-text;
+}
+
+html, body {
+    width: 100%;
+}
+

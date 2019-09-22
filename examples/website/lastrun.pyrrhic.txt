@@ -1,0 +1,17 @@
+# DAG serialised by Pyrrhic
+# https://www.tawesoft.co.uk/products/open-source-software
+format 1
+
+# node num_links path
+node 0 out/style.css
+node 1 styles/colors.scss
+node 1 styles/main.scss
+node 1 styles/mixins.scss
+
+# func name hash
+func scss 1dfc09d6d7d6fd9aa7cd4793a9b8459ce1c38e981c9765eea3c71eae252a2ead
+
+# link source_node_index dest_node_index function_index
+link 1 0 0
+link 2 0 0
+link 3 0 0

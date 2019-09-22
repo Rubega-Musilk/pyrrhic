@@ -1,0 +1,25 @@
+from setuptools import setup
+
+setup(name='pyrrhic',
+    version='0.1b2',
+    description='Programmable Python build system',
+    long_description='Programmable Python build system',
+    url='https://github.com/tawesoft/pyrrhic',
+    author='Ben Golightly',
+    author_email='ben@tawesoft.co.uk',
+    maintainer='Tawesoft Ltd',
+    maintainer_email='opensource@tawesoft.co.uk',
+    license='MIT',
+    packages=['pyrrhic'],
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Topic :: Software Development :: Build Tools',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+    ],
+    zip_safe=True)
