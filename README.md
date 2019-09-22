@@ -19,7 +19,7 @@ Features
 ### Dynamic dependencies
 
 * Pyrrhic automatically detects additional file dependencies without you having
-to name them explicitly, e.g. `@import` or `#include` statements.
+to name them explicitly
 
 * Pyrrhic automatically knows that if input "A" produces output "B", and input
 "B" produces output "C", then output "C" also depends on "A".
