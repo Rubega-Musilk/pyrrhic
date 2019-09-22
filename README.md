@@ -38,7 +38,7 @@ then pyrrhic does nothing!
 
 * `pyrrhic.commands.cat`: concatenate files with optional transformations
 * `pyrrhic.commands.copy`: copy files with optional transformations
-* `pyrrhic.commands.scss`: compile SCSS⮕CSS
+* `pyrrhic.commands.scss`: compile SCSS⮕CSS (`pip install libsass`)
 
 
 Usage
