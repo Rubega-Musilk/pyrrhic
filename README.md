@@ -10,13 +10,13 @@ compilation, dynamic dependencies, and powerful builtins for a range of tasks.
 Features
 --------
 
-# Programmable
+### Programmable
 
 * Write your build commands as simple Python functions
 
 * Generate your build rules as a simple Python list
 
-# Dynamic dependencies
+### Dynamic dependencies
 
 * Pyrrhic automatically detects additional file dependencies without you having
 to name them explicitly, e.g. `@import` or `#include` statements.
@@ -28,7 +28,7 @@ to name them explicitly, e.g. `@import` or `#include` statements.
 command used to create an output! Change how a build command is implemented,
 and Pyrrhic knows to update the target.
 
-# Correct and minimal
+### Correct and minimal
 
 Pyrrhic keeps the system up to date (correct) with the minimum of work. It will
 always apply the smallest subtree of a dependency graph. If nothing changes,
