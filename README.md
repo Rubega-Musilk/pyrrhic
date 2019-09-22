@@ -12,9 +12,9 @@ Features
 
 ### Programmable
 
-* Build commands are simple Python functions
+* Build commands are short Python functions
 
-* Build rules are a simple Python list
+* Build rules are a Python list of (command, inputs)
 
 ### Dynamic dependencies
 
@@ -33,6 +33,12 @@ and Pyrrhic knows to update the target.
 Pyrrhic keeps the system up to date (correct) with the minimum of work. It will
 always apply the smallest subtree of a dependency graph. If nothing changes,
 then pyrrhic does nothing!
+
+### Handy builtins
+
+* `pyrrhic.commands.cat`: concatenate files with optional transformations
+* `pyrrhic.commands.copy`: copy files with optional transformations
+* `pyrrhic.commands.scss`: compile SCSS⮕CSS
 
 
 Usage
