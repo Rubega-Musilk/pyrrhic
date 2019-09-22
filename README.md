@@ -12,9 +12,9 @@ Features
 
 ### Programmable
 
-* Write your build commands as simple Python functions
+* Build commands are simple Python functions
 
-* Generate your build rules as a simple Python list
+* Build rules are a simple Python list
 
 ### Dynamic dependencies
 
