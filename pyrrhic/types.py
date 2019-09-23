@@ -64,3 +64,16 @@ TRules = List[TRule]
 """A list of objects of type [[TRule]]."""
 
 
+TScanner = Callable[[pathlib.Path, pathlib.Path], Iterator[Tuple[pathlib.Path, pathlib.Path]]]
+"""The type of a scanner function, a function that takes a 2-tuple of an input
+file:
+
+    1. Base directory
+    2. Path relative to base directory
+
+And generates a sequence of 2-tuples representing files included/imported by
+the input file, and recursively files included/imported by imported files:
+
+    1. Base directory
+    2. Path relative to base directory
+"""

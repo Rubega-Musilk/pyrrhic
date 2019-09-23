@@ -14,7 +14,7 @@ Features
 
 * Build commands are short Python functions
 
-* Build rules are a Python list of (command, inputs)
+* Build rules are a Python list of (command, inputs) tuples
 
 ### Dynamic dependencies
 
@@ -31,13 +31,14 @@ and Pyrrhic knows to update the target.
 ### Correct and minimal
 
 Pyrrhic keeps the system up to date (correct) with the minimum of work. It will
-always apply the smallest subtree of a dependency graph. If nothing changes,
-then pyrrhic does nothing!
+always apply the smallest subtree of a dependency graph. It will delete stale
+outputs. If nothing changes, then pyrrhic does nothing!
 
 ### Handy builtins
 
 * `pyrrhic.commands.cat`: concatenate files with optional transformations
 * `pyrrhic.commands.copy`: copy files with optional transformations
+* `pyrrhic.commands.compile_file`: generic command to compile a file and track dependencies
 * `pyrrhic.commands.scss`: compile SCSS⮕CSS (`pip install libsass`)
 
 

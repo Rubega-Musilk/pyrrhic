@@ -1,7 +1,7 @@
-from typing import Callable, Optional, List
+from typing import Callable, Optional, List, Mapping
 from pathlib import Path
 import os
-from .types import TCommand, TCommandInputs, TCommandReturn, TPathLike
+from .types import TCommand, TCommandInputs, TCommandReturn, TPathLike, TScanner
 from .util import identity, read, readall, as_pathlib_path
 from .hash import function as hash_function
 from . import scanners
@@ -18,7 +18,7 @@ def _mkret(fn: Callable, name: Optional[str]):
 
 def cat(
     dest: TPathLike,
-    name: str = "",
+    name: str = "cat",
     trans: Optional[Callable[[bytes], bytes]] = None,
     trans_final: Optional[Callable[[bytes], bytes]] = None,
 ) -> TCommand:
@@ -37,6 +37,8 @@ def cat(
     Returns:
         A new [[TCommand]] function with a bound `dest` that implements this
         operation.
+
+    This is a building block usually used by other commands.
     """
     if trans is None: trans = identity
     if trans_final is None: trans_final = identity
@@ -57,7 +59,7 @@ def cat(
 
 def copy(
     dest_dir: TPathLike,
-    name: str = "",
+    name: str = "copy",
     trans: Optional[Callable[[bytes], bytes]] = None
 ) -> TCommand:
     """
@@ -89,20 +91,32 @@ def copy(
     return _mkret(cpy_fn, name)
 
 
-def scss(dest: str, **kwargs) -> TCommand:
+def compile_file(
+    dest: str,
+    compile_fn: Callable[[Path, Path], bytes],
+    scan_fn: TScanner,
+    name: str = "compile_file"
+) -> TCommand:
     """
-    Constructs a command that compiles a Sass file, tracking its imports.
+    Constructs a command that compiles a file, tracking its imports as
+    dependencies.
 
     Arguments:
         dest: filename of compiled CSS to be written
+        compile_fn: function that compiles a file to bytes, taking two arguments:
+            1. Base directory
+            2. Path relative to base directory
+        scan_fn: function that parses a file's inputs (see `types.TScanner`)
         kwargs: list of arguments to pass to the sass.compile function
+
+    Returns:
+        A new [[TCommand]] function with a bound `dest` that implements this
+        operation.
+
+    This is a building block usually used by other commands.
     """
 
     p_dest = as_pathlib_path(dest)
-
-    def compile_fn(basedir, path):
-        import sass # pip install libsass
-        return sass.compile(filename=str(basedir/path), include_paths=[str(basedir)], **kwargs).encode("utf-8")
 
     def read_fn(inputs: TCommandInputs) -> TCommandReturn:
 
@@ -112,8 +126,25 @@ def scss(dest: str, **kwargs) -> TCommand:
 
         basedir, path = l_inputs[0]
         output = p_dest
-        deps = [(basedir, path)] + list(scanners.scss(basedir, path))
+        deps = [(basedir, path)] + list(scan_fn(basedir, path))
 
         yield (output, l_inputs, list(deps), lambda: compile_fn(basedir, path))
 
-    return _mkret(read_fn, "scss")
+    return _mkret(read_fn, name)
+
+
+def scss(dest: str, encoding: str="utf-8", name: str = "scss", **kwargs) -> TCommand:
+    """
+    Constructs a command that compiles a SCSS file, tracking its imports as
+    dependencies. Use `kwargs` to pass additional arguments to the
+    `sass.compile` function.
+    """
+    import sass  # pip install libsass
+
+    def compile_fn(basedir, path):
+        return sass.compile(filename=str(basedir/path), include_paths=[str(basedir)], **kwargs).encode(encoding)
+
+    def scan_fn(basedir, path):
+        return scanners.scss(basedir, path, encoding=encoding)
+
+    return compile_file(dest, compile_fn, scan_fn, name)

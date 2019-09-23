@@ -1,17 +1,76 @@
 # DAG serialised by Pyrrhic
-# https://www.tawesoft.co.uk/products/open-source-software
-format 1
+# See https://github.com/tawesoft/pyrrhic
+# See https://www.tawesoft.co.uk/products/open-source-software
+format 2
 
 # node num_links path
+node 2 content/pages/about.md
+node 2 content/posts/2018/0412-egestas-ac-elementum-at.md
+node 2 content/posts/2018/1030-cras-aliquam-tempor-elementum.md
+node 2 content/posts/2018/1225-lorem-ipsum-dolor-sit-amet.md
+node 2 content/posts/2019/0802-cras-aliquam-tempor-elementum.md
+node 2 content/posts/2019/0814-egestas-ac-elementum-at.md
+node 2 content/posts/2019/0923-lorem-ipsum-dolor-sit-amet.md
+node 0 out/pages/about.html
+node 1 out/pages.xml
+node 0 out/posts/2018/0412-egestas-ac-elementum-at.html
+node 0 out/posts/2018/1030-cras-aliquam-tempor-elementum.html
+node 0 out/posts/2018/1225-lorem-ipsum-dolor-sit-amet.html
+node 0 out/posts/2019/0802-cras-aliquam-tempor-elementum.html
+node 0 out/posts/2019/0814-egestas-ac-elementum-at.html
+node 0 out/posts/2019/0923-lorem-ipsum-dolor-sit-amet.html
+node 6 out/posts.xml
 node 0 out/style.css
 node 1 styles/colors.scss
 node 1 styles/main.scss
 node 1 styles/mixins.scss
 
 # func name hash
-func scss 1dfc09d6d7d6fd9aa7cd4793a9b8459ce1c38e981c9765eea3c71eae252a2ead
+func make_html_pages 53e792fd2d81650fc3a6d122172f13857db58b3742c9b438a24ded885ba8747f
+func make_xml_index ba5ddd866e74b227941521e74bbc29f66e40043e139a4cf1ef4422f1d60c80d5
+func make_html_pages dc6f56eee27822fd3e9dbbb66c781a7ba113b6dec425ee652f6b0c286e464185
+func make_xml_index 7e277c484f7e32d3ecee7b3822c872ec7f0b805a56cca5e8fef1e59a497db44b
+func scss 3cd9885113ca0e0efc794c02cdbd06f70f1b8f79b6e7535e3e37ed5739c3e9fd
 
-# link source_node_index dest_node_index function_index
-link 1 0 0
-link 2 0 0
-link 3 0 0
+# (d)link source_node_index dest_node_index function_index
+
+# dlink means the input is direct, link means indirect
+link 0 7 0
+link 0 8 1
+dlink 0 7 0
+dlink 0 8 1
+link 1 9 2
+link 1 15 3
+dlink 1 9 2
+dlink 1 15 3
+link 2 10 2
+link 2 15 3
+dlink 2 10 2
+dlink 2 15 3
+link 3 11 2
+link 3 15 3
+dlink 3 11 2
+dlink 3 15 3
+link 4 12 2
+link 4 15 3
+dlink 4 12 2
+dlink 4 15 3
+link 5 15 3
+link 5 13 2
+dlink 5 15 3
+dlink 5 13 2
+link 6 14 2
+link 6 15 3
+dlink 6 14 2
+dlink 6 15 3
+link 8 7 0
+link 15 9 2
+link 15 10 2
+link 15 11 2
+link 15 12 2
+link 15 13 2
+link 15 14 2
+link 17 16 4
+link 18 16 4
+dlink 18 16 4
+link 19 16 4

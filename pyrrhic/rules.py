@@ -61,9 +61,11 @@ class Node:
     def __init__(self, path: Path) -> None:
         self.path = path        # type: Path
         self.links = set()      # type: Set[Link]
+        self.dlinks = set()     # type: Set[Link] # links, direct only
         self.rlinks = set()     # type: Set[Link] # reverse links
         self.drlinks = set()    # type: Set[Link] # reverse links, direct only
         self.production = None  # type: Optional[Callable]
+        self.index = 0          # type: int
 
     def __lt__(self, other) -> bool:
         return self.path < other.path
@@ -115,7 +117,7 @@ class Link:
     included so that questions can also be asked in reverse e.g. not only
     what nodes were created from the source, but what were all the dependencies
     of the destination."""
-    # TODO TCommand isn't right
+    # TODO TCommand isn't right?
     def __init__(self, cmd: TCommand, src: Node, dest: Node, basedir: Optional[Path] = None) -> None:
         if src == dest:
             raise bwRecursionError("Cycle detected: source and dest are the same (%s)" % repr((cmd[1], src)))
@@ -238,8 +240,9 @@ class DAG:
         sorted_nodes = OrderedDict(sorted(self.nodes.items()))
         keys = list(sorted_nodes.keys())
         yield "# DAG serialised by Pyrrhic"
-        yield "# https://www.tawesoft.co.uk/products/open-source-software"
-        yield "format 1"
+        yield "# See https://github.com/tawesoft/pyrrhic"
+        yield "# See https://www.tawesoft.co.uk/products/open-source-software"
+        yield "format 2"
 
         # define each node in an indexable order
         yield "\n# node num_links path"
@@ -260,10 +263,13 @@ class DAG:
         for cmd_name, cmd_hash in cmds:
             yield "func %s %s" % (cmd_name, to_hex(cmd_hash))
 
-        yield "\n# link source_node_index dest_node_index function_index"
+        yield "\n# (d)link source_node_index dest_node_index function_index"
+        yield "\n# dlink means the input is direct, link means indirect"
         for index, node in enumerate(sorted_nodes.values()):
             for link in sorted(list(node.links)):
                 yield "link %d %d %d" % (index, keys.index(link.dest.path), cmds.index((link.cmd_name, link.cmd_hash)))
+            for link in sorted(list(node.dlinks)):
+                yield "dlink %d %d %d" % (index, keys.index(link.dest.path), cmds.index((link.cmd_name, link.cmd_hash)))
 
     def serialize(self) -> str:
         """Serialise the digraph to a string for persisting to disk"""
@@ -287,9 +293,10 @@ class DAG:
             label, rest = parts
 
             if label == "format":
-                if int(rest) != 1:
+                if int(rest) != 2:
                     # unrecognised future format
                     # return empty DAG for compatibility
+                    print("INFO: pyrrhic.rules.DAG.deserialize: skipping DAG with unknown format")
                     return DAG()
 
             elif label == "node":
@@ -321,6 +328,19 @@ class DAG:
                 src_node.links.add(Link(cmd, src_node, dest_node))
                 dest_node.rlinks.add(Link(cmd, src_node, dest_node))
 
+            elif label == "dlink":
+                parts = rest.split(" ", maxsplit=2)
+                src, dest, cmd_index = parts
+                if len(parts) != 3: raise SyntaxError(lineno)
+
+                src_node = dag.nodes.get(paths[int(src)])
+                dest_node = dag.nodes.get(paths[int(dest)])
+                cmd = commands[int(cmd_index)]
+                cmd_name, cmd_hash = cmd
+                cmd = (do_not_call, cmd_name, cmd_hash)
+                src_node.dlinks.add(Link(cmd, src_node, dest_node))
+                dest_node.drlinks.add(Link(cmd, src_node, dest_node))
+
             else:
                 raise SyntaxError("Unknown command %s on line %d" % (label, lineno))
 
@@ -340,8 +360,12 @@ class DAG:
         for index, node in enumerate(sorted_nodes.values()):
             yield "\n    // Source %s" % (dquo(str(node.path)))
             for link in node.links:
+                # brackets mean its an indirect link e.g. is an implicit input
+                # e.g. an @import or #include
+                l,r = "(", ")"
+                if link in node.dlinks: l,r="",""
                 yield "    N_%d -> N_%d [label=%s];" % \
-                    (index, keys.index(link.dest.path), dquo(link.cmd_name))
+                    (index, keys.index(link.dest.path), dquo(l+link.cmd_name+r))
 
         yield "}"
 
@@ -364,12 +388,18 @@ class DAG:
         previous_dependency_graph: Optional["DAG"],
         _mtimes: Optional[Mapping[str, float]] = None
     ) -> Iterator[Tuple[str, Node]]:
+        return sorted(list(self._apply(previous_dependency_graph, _mtimes)), key=lambda x: x[1].index)
+
+    def _apply(self,
+        previous_dependency_graph: Optional["DAG"],
+        _mtimes: Optional[Mapping[str, float]] = None
+    ) -> Iterator[Tuple[str, Node]]:
         """Apply a set of rules to create outputs.
 
         Arguments:
             previous_dependency_graph: a previous dependency graph of a set of rules
                 (if one exists) so that old targets can be removed, or `None`.
-            __mtimes: for testing, a cache of file-last-modified times.
+            _mtimes: for testing, a cache of file-last-modified times.
 
         Return value:
             A sequence of 2-tuples representing the result of comparing the DAGs.
@@ -484,6 +514,7 @@ def resolve(rules: TRules) -> Iterator[Tuple[TCommand, Path, List[Tuple[Path, Pa
 def to_dag(rules: TRules) -> DAG:
     """Build a dependency graph from a list of rules."""
     dag = DAG()
+    i = 0
 
     # Build DAG
     for cmd, dest, inputs, sources in resolve(rules):
@@ -496,8 +527,16 @@ def to_dag(rules: TRules) -> DAG:
             src_node = dag.get(Node(basedir / source))
             src_node.links.add(Link(cmd, src_node, dest_node))
             dest_node.rlinks.add(Link(cmd, src_node, dest_node, basedir=basedir))
-            if (basedir, source) in inputs:
-                dest_node.drlinks.add(Link(cmd, src_node, dest_node, basedir=basedir))
+
+        for (basedir, source) in inputs:
+            src_node = dag.get(Node(basedir / source))
+            src_node.links.add(Link(cmd, src_node, dest_node))
+            dest_node.rlinks.add(Link(cmd, src_node, dest_node, basedir=basedir))
+            src_node.dlinks.add(Link(cmd, src_node, dest_node))
+            dest_node.drlinks.add(Link(cmd, src_node, dest_node, basedir=basedir))
+
+        dest_node.index = i # for ordering
+        i+=1
 
     # Check for cycles
     result = dag.has_cycles()

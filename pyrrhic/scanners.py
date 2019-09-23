@@ -4,12 +4,12 @@ from .util import as_pathlib_path, read
 import parsley
 
 
-def scss(basedir, input) -> Iterator[Tuple[Path, Path]]:
+def scss(basedir, input, encoding="utf-8") -> Iterator[Tuple[Path, Path]]:
     """Scans a SCSS input file and its imports for `@import` statements"""
 
     p_basedir = as_pathlib_path(basedir)
     p_input = as_pathlib_path(input)
-    contents = read(p_basedir / p_input).decode('utf-8')
+    contents = read(p_basedir / p_input).decode(encoding)
     parts = contents.split(";")
     imports = []
 
