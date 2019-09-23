@@ -4,7 +4,7 @@ Pyrrhic
 Pyrrhic is a programmable Python build system that supports incremental
 compilation, dynamic dependencies, and powerful builtins for a range of tasks.
 
-![Dependency Graph](examples/website/dag.png)
+![Dependency Graph](examples/website/dag-example.png)
 
 
 Features

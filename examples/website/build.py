@@ -35,7 +35,6 @@ rules = [
     (mycommands.make_xml_index("out/posts.xml"), [('content', 'posts/**/*.md')]),
     (mycommands.make_xml_index("out/pages.xml"), [('content', 'pages/*.md'), ('content', 'pages/**/*.md')]),
 
-
     # Let's add a rule to build an output HTML page for all input pages
     # In this case, we're specifying an output directory instead of an output
     # file.
@@ -44,8 +43,19 @@ rules = [
     # ignore this bit of the path, so we're writing "out/pages/..." rather than
     # "out/content/pages...".
 
-    (mycommands.make_html_pages("out", index="out/posts.xml"), [('content', 'posts/**/*.md')]),
-    (mycommands.make_html_pages("out", index="out/pages.xml"), [('content', 'pages/*.md'), ('content', 'pages/**/*.md')]),
+    (mycommands.make_html_pages("out", template="template.html", pages_index="out/pages.xml"),
+        [('content', 'posts/**/*.md')]),
+
+    (mycommands.make_html_pages("out", template="template.html", pages_index="out/pages.xml"),
+        [('content', 'pages/*.md'), ('content', 'pages/**/*.md')]),
+
+
+    # Lets add a rule to create an index page for the latest posts. This command
+    # performs pagination, breaking the list of pages over several pages. e.g.
+    # index.html, archive/2.html, archive/3.html ...
+
+    (mycommands.make_html_indexes("out", template="template.html",
+        pages_index="out/pages.xml", posts_index="out/posts.xml", src_dir="content"), []),
 
 ] # end of rules array
 
@@ -56,6 +66,9 @@ dag = pyr.rules.to_dag(rules)
 
 # We can save this graph as an image using pydot.
 
+# Note this might take a little bit of time for a large dependency graph!
+# It's useful for debugging, but comment it out for a normal build cycle
+
 dag.pydot("Dependency Graph").write_png("dag.png")
 
 # In order to keep track of what work has already been done, we need to
@@ -63,7 +76,7 @@ dag.pydot("Dependency Graph").write_png("dag.png")
 
 try:
     with Path("lastrun.pyrrhic.txt").open("r") as fp:
-        prev = pyr.rules.DAG.deserialize(fp.read())
+        prev = pyr.rules.deserialize(fp.read())
 except FileNotFoundError:
     prev = None
 
@@ -91,8 +104,6 @@ for op, node in updates:
         node.apply()
 
 
-# Save the previous build result
+# Save the build result so we don't have to do as much work next run!
 with Path("lastrun.pyrrhic.txt").open("w") as fp:
     fp.write(dag.serialize())
-
-

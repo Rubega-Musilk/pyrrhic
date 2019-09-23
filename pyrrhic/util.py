@@ -8,6 +8,11 @@ import sys
 import struct
 import json
 
+
+class Redo(RuntimeError):
+    pass
+
+
 try:
     RecursionError = RecursionError
 except NameError:

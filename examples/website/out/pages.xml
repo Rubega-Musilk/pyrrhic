@@ -1,9 +1,20 @@
 <?xml version='1.0' encoding='utf-8'?>
 <pages>
   <page>
+    <id>pages/contact</id>
+    <title>Contact Me</title>
+    <modified>2019-09-23 17:12:33.088644</modified>
+    <summary>Duis vel nulla sollicitudin, ornare massa sit amet, vestibulum nisl. Fusce 
+ bibendum risus erat, vel pulvinar nisi condimentum ut. Fusce volutpat dolor
+ quis ullamcorper cursus. Vestibulum gravida ac quam sed ultrices. Suspendisse
+ potenti. Phasellus molestie justo et egestas vestibulum. Nulla viverra nisi in
+ lacus congue, quis commodo nulla vulputate. Morbi pellentesque vel justo et
+ feugiat. Proin aliquam mi nec molestie aliquet. Fusce porttitor pulvinar risus.</summary>
+  </page>
+  <page>
     <id>pages/about</id>
     <title>About My Website</title>
-    <modified>2019-09-23 16:29:25.573821</modified>
+    <modified>2019-09-23 18:13:38.836024</modified>
     <summary>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis in accumsan nisi.
  Integer sed commodo libero, in blandit sapien. Nulla facilisi. Ut sit amet dui
  eleifend, faucibus enim eget, tristique augue. Sed sit amet lorem pulvinar,

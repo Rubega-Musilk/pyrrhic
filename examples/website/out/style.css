@@ -3,4 +3,40 @@ html {
   color: #363636; }
 
 html, body {
-  width: 100%; }
+  width: 100%;
+  margin: 0;
+  padding: 0; }
+
+body {
+  font-family: 'arial', sans-serif;
+  font-size: 18px; }
+
+a {
+  color: #b73154; }
+
+div#contain-all > div > div {
+  margin: 0 auto;
+  max-width: 800px; }
+
+div#header {
+  background-color: #b73154;
+  padding: 2em;
+  text-align: center;
+  color: #FFF;
+  font-size: 32px; }
+
+div#page-nav {
+  padding: 1em;
+  border-bottom: 2px solid #b73154; }
+  div#page-nav ul {
+    padding: 0;
+    margin: 0 auto;
+    display: inline-block;
+    list-style: none; }
+    div#page-nav ul li {
+      padding: 0;
+      margin: 1em;
+      display: inline; }
+
+div#content {
+  padding: 1em; }

@@ -9,7 +9,7 @@ import copy
 from .types import TCommand, TRule, TRules
 from .util import as_pathlib_path, dquo, str_encode, str_decode, do_not_call
 from .hash import to_hex, from_hex
-from .util import RecursionError as bwRecursionError
+from .util import RecursionError as bwRecursionError, Redo
 
 _p = as_pathlib_path
 
@@ -79,17 +79,22 @@ class Node:
         sources = [(link.basedir, link.src.path.relative_to(link.basedir)) for link in self.drlinks]
 
         for dest, _, _, writer in cmd(sources):
-            assert self.path == dest
+            #assert self.path == dest, (self.path, dest)
+            if self.path != dest:
+                print("WARN: self.path != dest (%s, %s)" % (self.path, dest))
+
 
             # make parent dirs
-            for parent in reversed(self.path.parents):
+            #for parent in reversed(self.path.parents):
+            for parent in reversed(dest.parents):
                 if not parent.is_dir():
                     try:
                         parent.mkdir()
                     except FileNotFoundError:
                         pass
 
-            with self.path.open("wb") as fp:
+            #with self.path.open("wb") as fp:
+            with dest.open("wb") as fp:
                 fp.write(writer())
 
         return
@@ -264,12 +269,14 @@ class DAG:
             yield "func %s %s" % (cmd_name, to_hex(cmd_hash))
 
         yield "\n# (d)link source_node_index dest_node_index function_index"
-        yield "\n# dlink means the input is direct, link means indirect"
+        yield "# dlink means the input is direct, link means indirect"
         for index, node in enumerate(sorted_nodes.values()):
             for link in sorted(list(node.links)):
-                yield "link %d %d %d" % (index, keys.index(link.dest.path), cmds.index((link.cmd_name, link.cmd_hash)))
-            for link in sorted(list(node.dlinks)):
-                yield "dlink %d %d %d" % (index, keys.index(link.dest.path), cmds.index((link.cmd_name, link.cmd_hash)))
+                if link in node.dlinks:
+                    yield "dlink %d %d %d" % (index, keys.index(link.dest.path), cmds.index((link.cmd_name, link.cmd_hash)))
+                else:
+                    yield "link %d %d %d" % (index, keys.index(link.dest.path), cmds.index((link.cmd_name, link.cmd_hash)))
+
 
     def serialize(self) -> str:
         """Serialise the digraph to a string for persisting to disk"""
@@ -338,6 +345,8 @@ class DAG:
                 cmd = commands[int(cmd_index)]
                 cmd_name, cmd_hash = cmd
                 cmd = (do_not_call, cmd_name, cmd_hash)
+                src_node.links.add(Link(cmd, src_node, dest_node))
+                dest_node.rlinks.add(Link(cmd, src_node, dest_node))
                 src_node.dlinks.add(Link(cmd, src_node, dest_node))
                 dest_node.drlinks.add(Link(cmd, src_node, dest_node))
 
@@ -351,6 +360,7 @@ class DAG:
         keys = list(sorted_nodes.keys())
 
         yield "digraph \"%s\" {" % name
+        yield "    rankdir=LR"
 
         # enumerate the nodes with labels
         for index, node in enumerate(sorted_nodes.values()):
@@ -504,11 +514,15 @@ def resolve(rules: TRules) -> Iterator[Tuple[TCommand, Path, List[Tuple[Path, Pa
         cmd, inputs = rule
         fn, *_ = cmd
 
-        outputs = fn(globber.glob([(_p(base), _p(path)) for base, path in inputs]))
+        try:
+            outputs = fn(globber.glob([(_p(base), _p(path)) for base, path in inputs]))
 
-        for output, inputs, sources, _writer in outputs:
-            globber.outputs.add(str(output))
-            yield cmd, _p(output), set([(_p(b), _p(p)) for b, p in inputs]), set([(_p(b), _p(p)) for b, p in sources])
+            for output, inputs, sources, _writer in outputs:
+                globber.outputs.add(str(output))
+                yield cmd, _p(output), set([(_p(b), _p(p)) for b, p in inputs]), set([(_p(b), _p(p)) for b, p in sources])
+
+        except Redo:
+            continue
 
 
 def to_dag(rules: TRules) -> DAG:
@@ -545,3 +559,6 @@ def to_dag(rules: TRules) -> DAG:
 
     return dag
 
+
+def deserialize(s: str):
+    return DAG.deserialize(s)

@@ -8,5 +8,22 @@ html {
 
 html, body {
     width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
+body {
+    font-family: 'arial', sans-serif;
+    font-size: 18px;
+}
+
+a { color: $color-tawesoft-red; }
+
+div#contain-all > div > div {
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+@import "header";
+@import "navigation";
+@import "content";

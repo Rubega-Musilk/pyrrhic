@@ -1,0 +1,17 @@
+div#page-nav {
+    padding: 1em;
+    border-bottom: 2px solid $color-tawesoft-red;
+
+    ul {
+        padding: 0;
+        margin: 0 auto;
+        display: inline-block;
+        list-style: none;
+
+        li {
+            padding: 0;
+            margin: 1em;
+            display: inline;
+        }
+    }
+}
