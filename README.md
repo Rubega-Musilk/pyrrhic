@@ -135,20 +135,24 @@ with Path("lastrun.pyrrhic.txt").open("w") as fp:
 Status
 ------
 
-This was an internal tool that we've recently open-sourced. The source files
-and examples contain lots of explanatory comments. But there's no formal
-documentation and only partial `pytest` coverage. We plan to fix this soon.
-Our next planned feature is supporting parallel builds.
+This was an internal tool that we've recently open-sourced. There might be
+a few changes to be made based on community feedback.
+
+The source files and examples contain lots of explanatory comments. But
+there's no formal documentation and only partial `pytest` coverage.
 
 Hopefully, you find Pyrrhic useful. Please let us know how it works out for
 you! You can open a GitHub issue or feedback at
-[]open-source@tawesoft.co.uk](mailto:open-source@tawesoft.co.uk)
+[open-source@tawesoft.co.uk](mailto:open-source@tawesoft.co.uk)
+
+Our next planned feature is supporting parallel builds.
 
 
 Support
 -------
 
-Pyrrhic should work with Python 3.4 or above (yes, that old)
+Pyrrhic should work with Python 3.4 or above (yes, 3.4! Our policy is to support
+Debian "oldoldstable" until end of life).
 
 For community support, please open a GitHub issue with code samples if you are
 having any problems.
