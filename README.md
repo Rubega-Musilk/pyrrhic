@@ -157,8 +157,8 @@ Debian "oldoldstable" until end of life).
 For community support, please open a GitHub issue with code samples if you are
 having any problems.
 
-[Tawesoft Ltd](https://www.tawesoft.co.uk/) also offer commercial support
-where we can sign NDAs, implement features, etc.
+[Tawesoft Ltd](https://www.tawesoft.co.uk/) also offer paid commercial support
+where we can sign NDAs, implement custom features, etc.
 
 
 
