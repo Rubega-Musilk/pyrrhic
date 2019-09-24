@@ -45,17 +45,15 @@ rules = [
 
     (mycommands.make_html_pages("out", template="template.html", pages_index="out/pages.xml"),
         [('content', 'posts/**/*.md')]),
-
     (mycommands.make_html_pages("out", template="template.html", pages_index="out/pages.xml"),
         [('content', 'pages/*.md'), ('content', 'pages/**/*.md')]),
-
 
     # Lets add a rule to create an index page for the latest posts. This command
     # performs pagination, breaking the list of pages over several pages. e.g.
     # index.html, archive/2.html, archive/3.html ...
 
-    (mycommands.make_html_indexes("out", template="template.html",
-        pages_index="out/pages.xml", posts_index="out/posts.xml", src_dir="content"), []),
+    (mycommands.make_html_indexes("out", template="template.html", pages_index="out/pages.xml"),
+        [('content', 'posts/**/*.md')]),
 
 ] # end of rules array
 

@@ -1,10 +1,41 @@
 from typing import Callable, Optional, List, Mapping
 from pathlib import Path
-import os
 from .types import TCommand, TCommandInputs, TCommandReturn, TPathLike, TScanner
 from .util import identity, read, readall, as_pathlib_path
 from .hash import function as hash_function
 from . import scanners
+
+# These functions construct and return a command that performs a build step.
+
+# Commands are always called twice: once to generate dependencies, then again
+# to actually perform useful work and generate outputs for each destination.
+
+# Each command takes an iterable of (basedir, path) pairs, and generates
+# any number of output 4-tuples:
+#   1. a destination path to write to - this is a plain Path
+#   2. a list of direct dependencies that are an input to that destination
+#       -- each is a 2-tuple (basedir, path) Path pair
+#   3. a list of indirect dependencies that are an indirect input to that
+#       destination, e.g. by being "@imported", that were not necessarily
+#       listed in the original inputs to the command function
+#       -- each is a 2-tuple (basedir, path) Path pair
+#   4. a function f() -> bytes, that is not called the first time, but
+#       when called, outputs bytes that Pyrrhic will write to the destination.
+
+# The differences between `cat` and `copy` are instructive to demonstrate how
+# these output tuples behave.
+
+# Note you can quickly construct a new function using these as building blocks,
+# as the later examples like `scss` show. For example, a simple function that
+# makes every input uppercase and saves to a directory can be implemented using
+# the optional `trans` argument to the `copy` command:
+#
+# def upper(destdir: TPathLike, encoding="utf-8"):
+#     def fn(x: bytes) -> bytes:
+#         return x.decode(encoding).upper().encode(encoding)
+#     return copy(destdir, name="upper", trans=fn)
+
+
 
 
 def _mkret(fn: Callable, name: Optional[str]):

@@ -7,12 +7,18 @@ from lxml import etree as ET
 
 
 def get_markdown_info(path, rest=False, encoding="utf-8"):
-    # Read the first four lines of a markdown file to extract title and
-    # first paragraph as a summary.
+    # Read the first four bits of a markdown file to extract title and
+    # first paragraph as a summary, quiting early to avoid parsing the rest of
+    # the file, unless rest is True. The format is expected to be as follows:
+    #
+    # ```
     # Title
     # ====
     #
-    # Paragraph One
+    # Paragraph One (plain text only)
+    #
+    # (Rest of document)
+    # ```
     parts = []
     with open(str(path), "rb") as fp:
         title = next(fp)
@@ -163,21 +169,22 @@ def make_html_pages(
 
 def make_html_indexes(
         dest,
-        template=None,
         pages_index=None,
-        posts_index=None,
-        src_dir=None,
+        template=None,
         encoding: str = "utf-8",
         posts_per_page: int = 3
     ):
     # Constructs a command function to generate HTML pages for each input
-    # Use the pages_index and posts_index XML to generate navigation
+    # Use the pages_index XML to generate navigation
 
     if not template: raise RuntimeError("Need template kwargs")
     if not pages_index: raise RuntimeError("Need pages_index kwarg")
-    if not posts_index: raise RuntimeError("Need posts_index kwarg")
-    if not src_dir: raise RuntimeError("Need src_dir kwarg")
 
+    # NOTE: this command creates a variable number of indexes (due to
+    # pagination) depending on the number of posts. A command can't create
+    # a variable number of outputs depending on a previous output, because
+    # then the Dependency Graph isn't stable. So we have to rescan the original
+    # inputs instead of relying on an intermediate generated file.
 
     # Define a function that takes a sequence of inputs (basedir, filename)
     # and generates a 4-tuple for each output
@@ -194,32 +201,33 @@ def make_html_indexes(
         p_destdir = Path(dest)
         p_template = Path(template)
         p_pages_index = Path(pages_index)
-        p_posts_index = Path(posts_index)
+        paths = []
 
-        p_src_dir = Path(src_dir)
+        for basedir, path in inputs:
+            paths.append((Path(basedir), Path(path)))
+
+        paths = sorted(paths, key=lambda x: x[1], reverse=True)
 
         def summary(post, root):
-            title = post.find("title").text
-            url = post.find("id").text + ".html"
+            basedir, filename = post
+            title, summary = get_markdown_info(basedir / filename, encoding=encoding)
+            url = str(filename.parent) + "/" + filename.stem + ".html"
 
-            created = post.find("id").text
-            created = created.split("-", maxsplit=1)[0]
-            _, y, md = created.split("/")
-            m = md[0:2]
-            d = md[2:4]
-            created = date(year=int(y), month=int(m), day=int(d)).strftime("%A %d %B %Y")
+            created = str(filename)
+            ymd = str(filename).split("-", maxsplit=1)[0]
+            _, y, md = ymd.split("/", maxsplit=2)
+            m, d = md[0:2], md[2:4]
+            created_dt = date(year=int(y), month=int(m), day=int(d))
+            created = created_dt.strftime("%A %d %B %Y")
 
-            modified = post.find("modified").text
-            summary = post.find("summary").text
             return """
 <h2><a href="%s%s">%s</a></h2>
 <p><i>%s</i></p>
 <p>%s</p>
-""" % (root, url, title, created, summary)
+""" % (root, url, title.decode(encoding), created, summary.decode(encoding))
 
         def work(index: int, posts, last: bool) -> bytes:
             pages = ET.fromstring(pyr.util.read(p_pages_index))
-
             template = pyr.util.read(p_template)
             root = ""
             title, desc = "Latest Posts", "Latest posts for my website"
@@ -243,12 +251,7 @@ def make_html_indexes(
             for i in range(0, len(l), n):
                 yield l[i:i + n]
 
-        if p_posts_index.exists():
-            posts = list(ET.fromstring(pyr.util.read(p_posts_index)))
-        else:
-            raise pyr.util.Redo
-
-        for item, last in pyr.util.list_lastitems(enumerate(chunks(posts, posts_per_page))):
+        for item, last in pyr.util.list_lastitems(enumerate(chunks(paths, posts_per_page))):
             index, chunk = item
 
             if index == 0:
@@ -256,13 +259,10 @@ def make_html_indexes(
             else:
                 p_destfile = Path("archive/%d.html" % (index+1))
 
-            pages = [(Path(p_destdir), Path(x.find('id').text+".html")) for x in chunk]
-
             yield (
                 p_destdir / p_destfile,
-                [],
-                pages + [
-                    (Path("."), p_posts_index),
+                paths,
+                paths + [
                     (Path("."), p_pages_index),
                     (Path("."), p_template)
                 ],

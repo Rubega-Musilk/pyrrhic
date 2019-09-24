@@ -9,7 +9,7 @@ import copy
 from .types import TCommand, TRule, TRules
 from .util import as_pathlib_path, dquo, str_encode, str_decode, do_not_call
 from .hash import to_hex, from_hex
-from .util import RecursionError as bwRecursionError, Redo
+from .util import RecursionError as bwRecursionError
 
 _p = as_pathlib_path
 
@@ -514,15 +514,11 @@ def resolve(rules: TRules) -> Iterator[Tuple[TCommand, Path, List[Tuple[Path, Pa
         cmd, inputs = rule
         fn, *_ = cmd
 
-        try:
-            outputs = fn(globber.glob([(_p(base), _p(path)) for base, path in inputs]))
+        outputs = fn(globber.glob([(_p(base), _p(path)) for base, path in inputs]))
 
-            for output, inputs, sources, _writer in outputs:
-                globber.outputs.add(str(output))
-                yield cmd, _p(output), set([(_p(b), _p(p)) for b, p in inputs]), set([(_p(b), _p(p)) for b, p in sources])
-
-        except Redo:
-            continue
+        for output, inputs, sources, _writer in outputs:
+            globber.outputs.add(str(output))
+            yield cmd, _p(output), set([(_p(b), _p(p)) for b, p in inputs]), set([(_p(b), _p(p)) for b, p in sources])
 
 
 def to_dag(rules: TRules) -> DAG:

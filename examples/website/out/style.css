@@ -12,7 +12,11 @@ body {
   font-size: 18px; }
 
 a {
-  color: #b73154; }
+  color: #b73154;
+  text-decoration: none; }
+
+a:hover {
+  text-decoration: underline; }
 
 div#contain-all > div > div {
   margin: 0 auto;
@@ -40,3 +44,10 @@ div#page-nav {
 
 div#content {
   padding: 1em; }
+
+div#foot {
+  padding-top: 2em; }
+
+div#foot > div {
+  border-top: 2px solid #b73154;
+  padding: 1em 0; }

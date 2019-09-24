@@ -6,27 +6,27 @@ format 2
 # node num_links path
 node 2 content/pages/about.md
 node 2 content/pages/contact.md
-node 2 content/posts/2018/0412-egestas-ac-elementum-at.md
-node 2 content/posts/2018/1030-cras-aliquam-tempor-elementum.md
-node 2 content/posts/2018/1225-lorem-ipsum-dolor-sit-amet.md
-node 2 content/posts/2019/0630-lorem-ipsum-dolor-sit-amet.md
-node 2 content/posts/2019/0802-cras-aliquam-tempor-elementum.md
-node 2 content/posts/2019/0814-egestas-ac-elementum-at.md
-node 2 content/posts/2019/0923-lorem-ipsum-dolor-sit-amet.md
+node 5 content/posts/2018/0412-egestas-ac-elementum-at.md
+node 5 content/posts/2018/1030-cras-aliquam-tempor-elementum.md
+node 5 content/posts/2018/1225-lorem-ipsum-dolor-sit-amet.md
+node 5 content/posts/2019/0630-lorem-ipsum-dolor-sit-amet.md
+node 5 content/posts/2019/0802-cras-aliquam-tempor-elementum.md
+node 5 content/posts/2019/0814-egestas-ac-elementum-at.md
+node 5 content/posts/2019/0923-lorem-ipsum-dolor-sit-amet.md
 node 0 out/archive/2.html
 node 0 out/archive/3.html
 node 0 out/index.html
 node 0 out/pages/about.html
 node 0 out/pages/contact.html
 node 12 out/pages.xml
-node 1 out/posts/2018/0412-egestas-ac-elementum-at.html
-node 1 out/posts/2018/1030-cras-aliquam-tempor-elementum.html
-node 1 out/posts/2018/1225-lorem-ipsum-dolor-sit-amet.html
-node 1 out/posts/2019/0630-lorem-ipsum-dolor-sit-amet.html
-node 1 out/posts/2019/0802-cras-aliquam-tempor-elementum.html
-node 1 out/posts/2019/0814-egestas-ac-elementum-at.html
-node 1 out/posts/2019/0923-lorem-ipsum-dolor-sit-amet.html
-node 3 out/posts.xml
+node 0 out/posts/2018/0412-egestas-ac-elementum-at.html
+node 0 out/posts/2018/1030-cras-aliquam-tempor-elementum.html
+node 0 out/posts/2018/1225-lorem-ipsum-dolor-sit-amet.html
+node 0 out/posts/2019/0630-lorem-ipsum-dolor-sit-amet.html
+node 0 out/posts/2019/0802-cras-aliquam-tempor-elementum.html
+node 0 out/posts/2019/0814-egestas-ac-elementum-at.html
+node 0 out/posts/2019/0923-lorem-ipsum-dolor-sit-amet.html
+node 0 out/posts.xml
 node 0 out/style.css
 node 1 styles/colors.scss
 node 1 styles/content.scss
@@ -38,8 +38,8 @@ node 12 template.html
 # func name hash
 func make_html_pages 0e5a7d4c54612b5ed0217a166fbd83489c23487cea9454ac5c8aad4d713bd436
 func make_xml_index 39e2793b4760fae070a24598d7590619d3dd67c8e952c97ecd8a9a79f99bd5ef
+func make_html_indexes 47b10bd665178b31e5cd17dc6753efac5d889390fa32a46c011f40fb4bec53ff
 func make_xml_index d9bb7f252f3fe2d05a2a8adc2fc4b28a05041fb256b745d67e2403ed506bd940
-func make_html_indexes 5fb934358d5c7f3e91cbe46d6dc4ea2bc12147a597f64cdd009c19c5df9f4b1e
 func scss 3cd9885113ca0e0efc794c02cdbd06f70f1b8f79b6e7535e3e37ed5739c3e9fd
 
 # (d)link source_node_index dest_node_index function_index
@@ -48,49 +48,59 @@ dlink 0 12 0
 dlink 0 14 1
 dlink 1 13 0
 dlink 1 14 1
+dlink 2 10 2
+dlink 2 11 2
 dlink 2 15 0
-dlink 2 22 2
+dlink 2 9 2
+dlink 2 22 3
+dlink 3 9 2
+dlink 3 10 2
+dlink 3 11 2
 dlink 3 16 0
-dlink 3 22 2
+dlink 3 22 3
+dlink 4 9 2
+dlink 4 10 2
+dlink 4 11 2
 dlink 4 17 0
-dlink 4 22 2
+dlink 4 22 3
+dlink 5 10 2
 dlink 5 18 0
-dlink 5 22 2
+dlink 5 9 2
+dlink 5 11 2
+dlink 5 22 3
 dlink 6 19 0
-dlink 6 22 2
+dlink 6 9 2
+dlink 6 10 2
+dlink 6 11 2
+dlink 6 22 3
+dlink 7 9 2
 dlink 7 20 0
-dlink 7 22 2
+dlink 7 10 2
+dlink 7 11 2
+dlink 7 22 3
+dlink 8 9 2
+dlink 8 10 2
 dlink 8 21 0
-dlink 8 22 2
-link 14 9 3
+dlink 8 11 2
+dlink 8 22 3
+link 14 9 2
+link 14 10 2
+link 14 11 2
 link 14 12 0
 link 14 13 0
 link 14 15 0
-link 14 10 3
-link 14 11 3
 link 14 16 0
 link 14 17 0
 link 14 18 0
 link 14 19 0
 link 14 20 0
 link 14 21 0
-link 15 10 3
-link 16 9 3
-link 17 9 3
-link 18 9 3
-link 19 11 3
-link 20 11 3
-link 21 11 3
-link 22 9 3
-link 22 10 3
-link 22 11 3
 link 24 23 4
 link 25 23 4
 dlink 26 23 4
 link 27 23 4
 link 28 23 4
-link 29 9 3
-link 29 10 3
+link 29 10 2
 link 29 12 0
 link 29 13 0
 link 29 15 0
@@ -99,5 +109,6 @@ link 29 17 0
 link 29 18 0
 link 29 19 0
 link 29 20 0
+link 29 9 2
+link 29 11 2
 link 29 21 0
-link 29 11 3

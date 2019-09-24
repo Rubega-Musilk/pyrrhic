@@ -139,16 +139,15 @@ def test_dag_mtimes():
     results = dag.apply(dag, _mtimes=mtimes)
     results = [(op, str(node.path)) for op, node in results]
 
-    # Note result ordering is from DFS with nodes at the same depth sorted
-    # alphabetically by path
+    # Note result ordering is the same as the rule order
     assert results == [
         ("w", "dest/a"),
-        ("w", "dest/a2"),
-        ("w", "dest/a2b2"),
+        ("w", "dest/c"),
         ("w", "dest/ab"),
         ("w", "dest/abc"),
+        ("w", "dest/a2"),
         ("w", "dest/b2"),
-        ("w", "dest/c"),
+        ("w", "dest/a2b2"),
     ]
 
 
@@ -192,12 +191,12 @@ def test_dag_diff():
     results = dag1.apply(dag2, _mtimes=mtimes)
     results = [(op, str(node.path)) for op, node in results]
 
-    # Note result ordering is from DFS with nodes at the same depth sorted
-    # alphabetically by path, but with deletes ordered first
+    # Note result ordering is the same as the rule order, but deletes happen
+    # after writes at the same depth
     assert results == [
         ("d", "dest/d"),
-        ("d", "dest/d2"),
         ("w", "dest/e"),
+        ("d", "dest/d2"),
         ("w", "dest/e2"),
     ]
 
