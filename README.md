@@ -27,8 +27,8 @@ Features
 having to name them explicitly, e.g. by scanning files for `@import` statements
 
 * Pyrrhic doesn't just track files: it also tracks the Python bytecode of the
-command used to create an output: change how a build command is implemented,
-and Pyrrhic knows to update the target
+command used to create an output. Change how a build command is implemented
+and Pyrrhic knows to update the target.
 
 ### Correct and minimal
 
