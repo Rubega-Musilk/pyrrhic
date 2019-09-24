@@ -32,9 +32,14 @@ and Pyrrhic knows to update the target.
 
 ### Correct and minimal
 
-Pyrrhic keeps the system up to date (correct) with the minimum of work. It will
-always apply the smallest necessary subtree of a dependency graph. It will
-delete stale outputs. If nothing changes, then pyrrhic does nothing!
+Save time on each build:
+
+* Pyrrhic keeps the system up to date (correct) with the minimum of work.
+  It will always apply the smallest necessary subtree of a dependency graph.
+
+* Pyrrhic will delete stale outputs.
+
+* If nothing changes, then Pyrrhic does nothing!
 
 ### Extensible
 
