@@ -8,8 +8,10 @@ Pyrrhic is great for building static websites, or any build process where
 tasks are written in Python.
 
 ![Dependency Graph](examples/website/dag-example.png)
+
 *Image: Example of a Pyrrhic dependency graph for compiling SCSS files. The
-brackets show an implicitly tracked `@import`.*
+brackets denote that an input was used in the command as an implicitly tracked
+`@import`.*
 
 
 Features
