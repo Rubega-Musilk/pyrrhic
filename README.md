@@ -70,7 +70,7 @@ markdown files.
 Here's what it's `build.py` looks like (open the original file for expanded
 comments on how to use Pyrrhic):
 
-```
+```python
 import pyrrhic
 import mycommands
 
