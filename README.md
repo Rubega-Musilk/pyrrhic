@@ -11,7 +11,7 @@ tasks are written in Python.
 
 *Image: Example of a Pyrrhic dependency graph for compiling SCSS files. The
 brackets denote that an input was used in the command as an implicitly tracked
-`@import`.*
+`@import`. The only explicit input was `main.scss`*
 
 
 Features
@@ -45,8 +45,9 @@ Save time on each build:
 
 ### Extensible
 
-Quickly create new commands out of the existing building blocks. Create new
-scanners to automatically pick up dependencies.
+* Quickly create new commands out of the existing building blocks.
+
+* Create new scanners to automatically pick up dependencies.
 
 ### Handy builtins
 
